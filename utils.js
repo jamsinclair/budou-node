@@ -2,7 +2,7 @@ const unicodePs = require('unicode/category/Ps')
 const unicodePi = require('unicode/category/Pi')
 
 /**
- * Checks char if belongs to Ps or Pi unicode category.
+ * Checks if the char belongs to Ps or Pi unicode categories
  * Ps: Punctuation, open (e.g. opening bracket characters)
  * Pi: Punctuation, initial quote (e.g. opening quotation mark)
  * @param {String} char 
