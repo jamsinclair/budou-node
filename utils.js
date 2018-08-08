@@ -15,7 +15,7 @@ const isOpenPunctuationChar = char => {
 
 /**
  * Checks if any chars are in range of Chinese, Japanese and Korean unicode characters
- * Using range from https://github.com/nltk/nltk/blob/develop/nltk/tokenize/util.py#L149
+ * Using ranges from https://github.com/nltk/nltk/blob/develop/nltk/tokenize/util.py#L149
  * @param {String} chars
  * @return {Boolean}
  */
