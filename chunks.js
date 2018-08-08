@@ -33,7 +33,7 @@ class Chunk {
   /**
    * Creates space Chunk.
    * @static
-   * @returns {Chunk}
+   * @return {Chunk}
    */
   static space () {
     return new Chunk(' ', { pos: POS.SPACE })
@@ -42,7 +42,7 @@ class Chunk {
   /**
    * Creates breakline Chunk
    * @static
-   * @returns {Chunk}
+   * @return {Chunk}
    */
   static breakline () {
     return new Chunk('\n', { pos: POS.BREAK })
@@ -50,7 +50,7 @@ class Chunk {
   
   /**
    * Checks if this is space Chunk
-   * @returns {Boolean}
+   * @return {Boolean}
    */
   isSpace () {
     return this.pos === POS.SPACE
@@ -58,7 +58,7 @@ class Chunk {
 
   /**
    * Checks if the word of the chunk contains CJK characters
-   * @returns {Boolean}
+   * @return {Boolean}
    */
   hasCjk () {
     return hasCjk(this.word)
@@ -66,7 +66,7 @@ class Chunk {
 
   /**
    * Returns serialized chunk data as object literal
-   * @returns {Object}
+   * @return {Object}
    */
   serialize () {
     return {
@@ -106,7 +106,7 @@ class ChunkList extends Array {
    * @param {Number} offset Begin offset of the range
    * @param {Number} length Length of the range
    * 
-   * @returns {Array} Overlapped chunks. (list of Chunk)
+   * @return {Array} Overlapped chunks. (list of Chunk)
    */
   getOverlaps (offset, length) {
     // In case entity's offset points to a space just before the entity.
