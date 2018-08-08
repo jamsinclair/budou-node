@@ -1,8 +1,18 @@
 const { hasCjk, isOpenPunctuationChar } = require('./utils')
 
-const DEPENDENT_LABEL = ['P', 'SNUM', 'PRT', 'AUX', 'SUFF', 'AUXPASS', 'RDROP', 'NUMBER', 'NUM', 'PREF']
+const DEPENDENT_LABEL = [
+  'P',
+  'SNUM',
+  'PRT',
+  'AUX',
+  'SUFF',
+  'AUXPASS',
+  'RDROP',
+  'NUMBER',
+  'NUM',
+  'PREF'
+]
 const POS = {
-  NONE: null,
   SPACE: 'SPACE',
   BREAK: 'BREAK',
   PUNCT: 'PUNCT'
@@ -14,15 +24,15 @@ const POS = {
  */
 class Chunk {
   /**
-   * @param {String} word Surface word of the chunk 
-   * @param {Object} options
-   * @param {String} [options.pos=null] Part of speech
-   * @param {String} [options.label=null] Label information
-   * @param {Boolean} [options.dependency=null]  Dependency to neighbor words. 
+   * @param {String} word Surface word of the chunk
+   * @param {Object} [options]
+   * @param {String} [options.pos] Part of speech
+   * @param {String} [options.label] Label information
+   * @param {Boolean} [options.dependency=null]  Dependency to neighbor words.
    *        null for no dependency, true for dependency to the following word,
    *        and false for the dependency to the previous word.
    */
-  constructor (word, { pos = POS.NONE, label = null, dependency = null } = {}) {
+  constructor (word, { pos, label, dependency = null } = {}) {
     this.word = word
     this.pos = pos
     this.label = label
@@ -47,7 +57,7 @@ class Chunk {
   static breakline () {
     return new Chunk('\n', { pos: POS.BREAK })
   }
-  
+
   /**
    * Checks if this is space Chunk
    * @return {Boolean}
@@ -80,7 +90,7 @@ class Chunk {
 
   /**
    * Adds dependency if any dependency is not assigned yet.
-   * @param {Boolean} defaultDependencyDirection 
+   * @param {Boolean} defaultDependencyDirection
    */
   maybeAddDependency (defaultDependencyDirection) {
     if (this.dependency === null && DEPENDENT_LABEL.indexOf(this.label) > -1) {
@@ -105,7 +115,7 @@ class ChunkList extends Array {
    * Returns chunks overlapped with the given range
    * @param {Number} offset Begin offset of the range
    * @param {Number} length Length of the range
-   * 
+   *
    * @return {Array} Overlapped chunks. (list of Chunk)
    */
   getOverlaps (offset, length) {
@@ -117,7 +127,7 @@ class ChunkList extends Array {
     let index = 0
     const result = []
     this.forEach(chunk => {
-      if ((offset < index + chunk.word.length) && (index < offset + length)) {
+      if (offset < index + chunk.word.length && index < offset + length) {
         result.push(chunk)
       }
       index += chunk.word.length

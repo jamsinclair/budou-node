@@ -59,7 +59,7 @@ const generateChunkList = () => {
 }
 
 describe('ChunkList.getOverlaps', () => {
-  test ('should correctly return overlapping chunks', () => {
+  test('should correctly return overlapping chunks', () => {
     const chunks = generateChunkList()
     const testExpectedOverlaps = (offset, length, expected) => {
       const overlaps = chunks.getOverlaps(offset, length)
@@ -68,23 +68,23 @@ describe('ChunkList.getOverlaps', () => {
 
     // chunks: ab cde fgh
     // range : __ _*_ ___
-    testExpectedOverlaps(3, 1, ['cde']) 
+    testExpectedOverlaps(3, 1, ['cde'])
 
     // chunks: ab cde fgh
     // range : __ _*_ ___
-    testExpectedOverlaps(2, 2, ['cde']) 
+    testExpectedOverlaps(2, 2, ['cde'])
 
     // chunks: ab cde fgh
     // range : _* **_ ___
-    testExpectedOverlaps(1, 3, ['ab', 'cde']) 
+    testExpectedOverlaps(1, 3, ['ab', 'cde'])
 
     // chunks: ab cde fgh
     // range : _* *** ___
-    testExpectedOverlaps(1, 4, ['ab', 'cde']) 
-    
+    testExpectedOverlaps(1, 4, ['ab', 'cde'])
+
     // chunks: ab cde fgh
     // range : _* *** *__
-    testExpectedOverlaps(1, 5, ['ab', 'cde', 'fgh']) 
+    testExpectedOverlaps(1, 5, ['ab', 'cde', 'fgh'])
   })
 })
 
@@ -94,7 +94,7 @@ describe('ChunkList.swap', () => {
     const oldChunks = chunks.slice(0, 2)
     const newChunk = new Chunk('ijk')
     chunks.swap(oldChunks, newChunk)
-    
-    expect (chunks.map(chunk => chunk.word)).toEqual(['ijk', 'fgh'])
+
+    expect(chunks.map(chunk => chunk.word)).toEqual(['ijk', 'fgh'])
   })
 })

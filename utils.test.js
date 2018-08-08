@@ -7,7 +7,7 @@ const KOREAN_DUMMY_TEXT = '모든 국민은 사생활의 비밀과 자유를 침
 const ALPHABET_DUMMY_TEXT = 'Lorem ipsum dolor sit amet, mazim simul percipit an nam.'
 const MIXTURE_DUMMY_TEXT = 'Lorem ipsum 食べる　모든 국민은　mazim simul 人受 an nam.'
 
-describe ('hasCjk', () => {
+describe('hasCjk', () => {
   test('should detect presence of Chinese characters', () => {
     expect(hasCjk(CHINESE_DUMMY_TEXT)).toEqual(true)
   })
@@ -29,7 +29,7 @@ describe ('hasCjk', () => {
   })
 })
 
-describe ('isOpenPunctuationChar', () => {
+describe('isOpenPunctuationChar', () => {
   test('should correctly detect open punctuation chars', () => {
     const testCharacters = ['「', '」', '（', '）', '<', '>', 'a', 'z', '‘', '’']
     const expectedResults = [true, false, true, false, false, false, false, false, true, false]
