@@ -1,0 +1,8 @@
+{
+  "name": "budou-node",
+  "version": "0.1.0",
+  "description": "Node.js port of tool for beautiful line breaking in CJK (Chinese, Japanese, and Korean)",
+  "main": "index.js",
+  "author": "Jamie Sinclair",
+  "license": "Do Not Know Yet"
+}
