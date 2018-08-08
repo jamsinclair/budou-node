@@ -4,7 +4,7 @@ describe('Chunk.space', () => {
   test('Should create a Space chunk instance', () => {
     const chunk = Chunk.space()
     const expected = { word: ' ', pos: 'SPACE', label: null, dependency: null, hasCjk: false }
-    expect(chunk.serialize()).toEqual(expected)
+    expect(chunk.toJSON()).toEqual(expected)
   })
 })
 
@@ -12,7 +12,7 @@ describe('Chunk.breakline', () => {
   test('Should create a line break chunk instance', () => {
     const chunk = Chunk.breakline()
     const expected = { word: '\n', pos: 'BREAK', label: null, dependency: null, hasCjk: false }
-    expect(chunk.serialize()).toEqual(expected)
+    expect(chunk.toJSON()).toEqual(expected)
   })
 })
 
@@ -46,6 +46,15 @@ describe('Chunk.addDependencyIfPunct', () => {
       const chunk = new Chunk(char, { pos: 'PUNCT' })
       expect(chunk.dependency).toEqual(expectedDependency[index])
     })
+  })
+})
+
+describe('Chunk.toJSON', () => {
+  test('Should correctly serialize data when called with JSON.stringify', () => {
+    const chunk = new Chunk('serialized')
+    const expected =
+      '{"word":"serialized","pos":null,"label":null,"dependency":null,"hasCjk":false}'
+    expect(JSON.stringify(chunk)).toEqual(expected)
   })
 })
 

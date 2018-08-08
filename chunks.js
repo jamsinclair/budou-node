@@ -75,15 +75,15 @@ class Chunk {
   }
 
   /**
-   * Returns serialized chunk data as object literal
+   * Method called on JSON.stringify. Serializes chunk data for JSON.
    * @return {Object}
    */
-  serialize () {
+  toJSON () {
     return {
       word: this.word,
-      pos: this.pos,
-      label: this.label,
-      dependency: this.dependency,
+      pos: this.pos || null,
+      label: this.label || null,
+      dependency: this.dependency || null,
       hasCjk: this.hasCjk()
     }
   }
