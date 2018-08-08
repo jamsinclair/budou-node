@@ -19,8 +19,8 @@ class Chunk {
    * @param {String} [options.pos=null] Part of speech
    * @param {String} [options.label=null] Label information
    * @param {Boolean} [options.dependency=null]  Dependency to neighbor words. 
-   *        None for no dependency, True for dependency to the following word,
-   *        and False for the dependency to the previous word.
+   *        null for no dependency, true for dependency to the following word,
+   *        and false for the dependency to the previous word.
    */
   constructor (word, { pos = POS.NONE, label = null, dependency = null } = {}) {
     this.word = word
