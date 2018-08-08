@@ -9,6 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@google-cloud/language": "^1.2.0",
     "unicode": "^11.0.1"
   },
   "devDependencies": {
