@@ -88,14 +88,13 @@ class Budou {
   /**
    * Returns a chunk list retrieved from Syntax Analysis results.
    * @param {String} text String to analyse
-   * @param {String} language language code
+   * @param {String} [language] language code
    * @return {Promise<ChunkList>} Promise that resolves to a chunk list
    */
-  _getSourceChunks (text, language = '') {
-    let sentenceLength = 0
-    const chunks = new ChunkList()
-
+  _getSourceChunks (text, language) {
     const getChunksResult = ({ tokens, language }) => {
+      let sentenceLength = 0
+      const chunks = new ChunkList()
       tokens.forEach((token, i) => {
         const word = token.text.content
         const beginOffset = token.text.beginOffset
@@ -107,13 +106,13 @@ class Budou {
           sentenceLength = beginOffset
         }
 
-        const chunk = new Chunk(word, pos, label)
+        const chunk = new Chunk(word, { pos, label })
         chunk.maybeAddDependency(i < token.dependencyEdge.headTokenIndex)
         chunks.push(chunk)
         sentenceLength += word.length
-
-        return { chunks, tokens, language }
       })
+
+      return { chunks, tokens, language }
     }
 
     return this._getAnnotations(text, language).then(getChunksResult)
