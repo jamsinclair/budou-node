@@ -26,13 +26,13 @@ class Chunk {
   /**
    * @param {String} word Surface word of the chunk
    * @param {Object} [options]
-   * @param {String} [options.pos] Part of speech
-   * @param {String} [options.label] Label information
+   * @param {String} [options.pos=null] Part of speech
+   * @param {String} [options.label=null] Label information
    * @param {Boolean} [options.dependency=null]  Dependency to neighbor words.
    *        null for no dependency, true for dependency to the following word,
    *        and false for the dependency to the previous word.
    */
-  constructor (word, { pos, label, dependency = null } = {}) {
+  constructor (word, { pos = null, label = null , dependency = null } = {}) {
     this.word = word
     this.pos = pos
     this.label = label
@@ -81,9 +81,9 @@ class Chunk {
   toJSON () {
     return {
       word: this.word,
-      pos: this.pos || null,
-      label: this.label || null,
-      dependency: this.dependency || null,
+      pos: this.pos,
+      label: this.label,
+      dependency: this.dependency,
       hasCjk: this.hasCjk()
     }
   }
