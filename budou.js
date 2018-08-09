@@ -82,3 +82,5 @@ class Budou {
   _getChunksWithApi () {}
   _htmlSerialize () {}
 }
+
+module.exports = Budou
