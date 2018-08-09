@@ -32,7 +32,7 @@ class Chunk {
    *        null for no dependency, true for dependency to the following word,
    *        and false for the dependency to the previous word.
    */
-  constructor (word, { pos = null, label = null , dependency = null } = {}) {
+  constructor (word, { pos = null, label = null, dependency = null } = {}) {
     this.word = word
     this.pos = pos
     this.label = label
