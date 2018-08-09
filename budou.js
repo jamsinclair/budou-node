@@ -1,3 +1,4 @@
+const { JSDOM } = require('jsdom')
 const language = require('@google-cloud/language').v1beta2
 const DEFAULT_CLASS = 'ww'
 
@@ -59,6 +60,21 @@ class Budou {
     }
 
     return result
+  }
+
+  /**
+   * Removes unnecessary line breaks and white spaces
+   *
+   * @param {String} source HTML code to be processed
+   * @return {String} The processed text content of HTML fragment
+   */
+  _preprocess (source) {
+    const doc = JSDOM.fragment(Buffer.from(source, 'utf8'))
+    // Strip line breaks, and extra whitespace
+    return doc.textContent
+      .trim()
+      .replace(/\r?\n|\r/g, '')
+      .replace(/ +(?= )/g, '')
   }
 
   _getChunksPerSpace () {}
