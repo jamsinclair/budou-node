@@ -1,4 +1,4 @@
-const { JSDOM } = require('jsdom')
+const cheerio = require('cheerio')
 const language = require('@google-cloud/language').v1beta2
 const DEFAULT_CLASS = 'ww'
 
@@ -69,9 +69,10 @@ class Budou {
    * @return {String} The processed text content of HTML fragment
    */
   _preprocess (source) {
-    const doc = JSDOM.fragment(Buffer.from(source, 'utf8'))
+    const doc = cheerio.load(Buffer.from(source, 'utf8'))
     // Strip line breaks, and extra whitespace
-    return doc.textContent
+    return doc
+      .text()
       .trim()
       .replace(/\r?\n|\r/g, '')
       .replace(/ +(?= )/g, '')
