@@ -66,7 +66,7 @@ class Budou {
   /**
    * Returns a chunk list by separating words by spaces
    * @param {String} text String to parse
-   * @param {String} language language id of string
+   * @param {String} language language code
    * @return {Object} ChunksResult. Contains chunks, language and tokens
    */
   _getChunksPerSpace (text, language) {
