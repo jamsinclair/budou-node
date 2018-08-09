@@ -15,3 +15,13 @@ describe('Budou._preprocess', () => {
     expect(result).toEqual(expected)
   })
 })
+
+describe('Budou._getChunksPerSpace', () => {
+  test('Input text should be parsed into chunks separated by spaces', () => {
+    const source = 'a b'
+    const expected = ['a', ' ', 'b']
+    const chunksResult = new Budou()._getChunksPerSpace(source)
+    const result = chunksResult.chunks.map(chunk => chunk.word)
+    expect(result).toEqual(expected)
+  })
+})
