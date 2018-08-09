@@ -86,6 +86,66 @@ class Budou {
   }
 
   /**
+   * Returns a chunk list retrieved from Syntax Analysis results.
+   * @param {String} text String to analyse
+   * @param {String} language language code
+   * @return {Promise<ChunkList>} Promise that resolves to a chunk list
+   */
+  _getSourceChunks (text, language = '') {
+    let sentenceLength = 0
+    const chunks = new ChunkList()
+
+    const getChunksResult = ({ tokens, language }) => {
+      tokens.forEach((token, i) => {
+        const word = token.text.content
+        const beginOffset = token.text.beginOffset
+        const label = token.dependencyEdge.label
+        const pos = token.partOfSpeech.tag
+
+        if (beginOffset > sentenceLength) {
+          chunks.push(Chunk.space())
+          sentenceLength = beginOffset
+        }
+
+        const chunk = new Chunk(word, pos, label)
+        chunk.maybeAddDependency(i < token.dependencyEdge.headTokenIndex)
+        chunks.push(chunk)
+        sentenceLength += word.length
+
+        return { chunks, tokens, language }
+      })
+    }
+
+    return this._getAnnotations(text, language).then(getChunksResult)
+  }
+
+  /**
+   * Returns the list of annotations from the given text
+   * @param {String} text String to analyse
+   * @param {String} [language] language code
+   * @param {String} [encodingType] Requested encodingType
+   * @return {Promise<Object>} Promise that resolves to AnnotateTextResponse Object
+   */
+  _getAnnotations (text, language, encodingType = 'UTF32') {
+    const request = {
+      document: {
+        content: text,
+        type: 'PLAIN_TEXT'
+      },
+      features: {
+        extract_syntax: true
+      },
+      encodingType
+    }
+
+    if (language) {
+      request.document.language = language
+    }
+
+    return this.client.annotateText(request)
+  }
+
+  /**
    * Removes unnecessary line breaks and white spaces
    *
    * @param {String} source HTML code to be processed
