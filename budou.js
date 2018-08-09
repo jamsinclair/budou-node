@@ -1,5 +1,6 @@
 const cheerio = require('cheerio')
 const language = require('@google-cloud/language').v1beta2
+const { Chunk, ChunkList } = require('./chunks')
 const DEFAULT_CLASS = 'ww'
 
 class Budou {
@@ -46,7 +47,7 @@ class Budou {
     if (language === 'ko') {
       // Korean has spaces between words, so this simply parses words by space
       // and wrap them as chunks.
-      chunksResult = this._getChunksPerSpace(language)
+      chunksResult = this._getChunksPerSpace(text, language)
     } else {
       chunksResult = this._getChunksWithApi(inputText, language, useEntity)
     }
@@ -60,6 +61,28 @@ class Budou {
     }
 
     return result
+  }
+
+  /**
+   * Returns a chunk list by separating words by spaces
+   * @param {String} text String to parse
+   * @param {String} language language id of string
+   * @return {Object} ChunksResult. Contains chunks, language and tokens
+   */
+  _getChunksPerSpace (text, language) {
+    const chunks = new ChunkList()
+    const words = text.split(' ')
+
+    words.forEach((word, index) => {
+      chunks.push(new Chunk(word))
+
+      // Add space chunk after, unless last word
+      if (index < words.length - 1) {
+        chunks.push(Chunk.space())
+      }
+    })
+
+    return { chunks, language, tokens: null }
   }
 
   /**
@@ -78,7 +101,6 @@ class Budou {
       .replace(/ +(?= )/g, '')
   }
 
-  _getChunksPerSpace () {}
   _getChunksWithApi () {}
   _htmlSerialize () {}
 }
