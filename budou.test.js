@@ -1,4 +1,5 @@
 const Budou = require('./budou')
+const { Chunk } = require('./chunks')
 
 describe('Budou._preprocess', () => {
   test('BR tags, line breaks, and unnecessary spaces should be removed', () => {
@@ -23,5 +24,97 @@ describe('Budou._getChunksPerSpace', () => {
     const chunksResult = new Budou()._getChunksPerSpace(source)
     const result = chunksResult.chunks.map(chunk => chunk.word)
     expect(result).toEqual(expected)
+  })
+})
+
+describe('Budou._getSourceChunks', () => {
+  const instance = new Budou()
+  const tokens = [
+    {
+      dependencyEdge: { headTokenIndex: 1, label: 'NN' },
+      partOfSpeech: { tag: 'NOUN' },
+      text: { beginOffset: 0, content: '六本木' }
+    },
+    {
+      dependencyEdge: { headTokenIndex: 8, label: 'ADVPHMOD' },
+      partOfSpeech: { tag: 'NOUN' },
+      text: { beginOffset: 3, content: 'ヒルズ' }
+    },
+    {
+      dependencyEdge: { headTokenIndex: 1, label: 'PRT' },
+      partOfSpeech: { tag: 'PRT' },
+      text: { beginOffset: 6, content: 'で' }
+    },
+    {
+      dependencyEdge: { headTokenIndex: 8, label: 'P' },
+      partOfSpeech: { tag: 'PUNCT' },
+      text: { beginOffset: 7, content: '、' }
+    },
+    {
+      dependencyEdge: { headTokenIndex: 5, label: 'P' },
+      partOfSpeech: { tag: 'PUNCT' },
+      text: { beginOffset: 8, content: '「' }
+    },
+    {
+      dependencyEdge: { headTokenIndex: 8, label: 'DOBJ' },
+      partOfSpeech: { tag: 'NOUN' },
+      text: { beginOffset: 9, content: 'ご飯' }
+    },
+    {
+      dependencyEdge: { headTokenIndex: 5, label: 'P' },
+      partOfSpeech: { tag: 'PUNCT' },
+      text: { beginOffset: 11, content: '」' }
+    },
+    {
+      dependencyEdge: { headTokenIndex: 5, label: 'PRT' },
+      partOfSpeech: { tag: 'PRT' },
+      text: { beginOffset: 12, content: 'を' }
+    },
+    {
+      dependencyEdge: { headTokenIndex: 8, label: 'ROOT' },
+      partOfSpeech: { tag: 'VERB' },
+      text: { beginOffset: 13, content: '食べ' }
+    },
+    {
+      dependencyEdge: { headTokenIndex: 8, label: 'AUX' },
+      partOfSpeech: { tag: 'VERB' },
+      text: { beginOffset: 15, content: 'ます' }
+    },
+    {
+      dependencyEdge: { headTokenIndex: 8, label: 'P' },
+      partOfSpeech: { tag: 'PUNCT' },
+      text: { beginOffset: 17, content: '。' }
+    }
+  ]
+  const expected = [
+    new Chunk('六本木', { label: 'NN', pos: 'NOUN', dependency: null }),
+    new Chunk('ヒルズ', { label: 'ADVPHMOD', pos: 'NOUN', dependency: null }),
+    new Chunk('で', { label: 'PRT', pos: 'PRT', dependency: false }),
+    new Chunk('、', { label: 'P', pos: 'PUNCT', dependency: false }),
+    new Chunk('「', { label: 'P', pos: 'PUNCT', dependency: true }),
+    new Chunk('ご飯', { label: 'DOBJ', pos: 'NOUN', dependency: null }),
+    new Chunk('」', { label: 'P', pos: 'PUNCT', dependency: false }),
+    new Chunk('を', { label: 'PRT', pos: 'PRT', dependency: false }),
+    new Chunk('食べ', { label: 'ROOT', pos: 'VERB', dependency: null }),
+    new Chunk('ます', { label: 'AUX', pos: 'VERB', dependency: false }),
+    new Chunk('。', { label: 'P', pos: 'PUNCT', dependency: false })
+  ]
+
+  beforeEach(() => {
+    instance._getAnnotations = jest.fn().mockReturnValue(Promise.resolve({ tokens }))
+  })
+
+  test('Words should be match between input text and retrieved chunks', () => {
+    expect.assertions(1)
+    return instance._getSourceChunks('六本木ヒルズで、「ご飯」を食べます。').then(({ chunks }) => {
+      expect(chunks.map(chunk => chunk.word)).toEqual(expected.map(chunk => chunk.word))
+    })
+  })
+
+  test('Dependency should be match between input text and retrieved chunks', () => {
+    expect.assertions(1)
+    return instance._getSourceChunks('六本木ヒルズで、「ご飯」を食べます。').then(({ chunks }) => {
+      expect(chunks.map(chunk => chunk.dependency)).toEqual(expected.map(chunk => chunk.dependency))
+    })
   })
 })
