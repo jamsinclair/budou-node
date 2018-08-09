@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "format": "prettier-standard '*.js'",
-    "test": "node test.js"
+    "test": "jest"
   },
   "dependencies": {
     "@google-cloud/language": "^1.2.0",
