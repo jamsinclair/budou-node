@@ -3,6 +3,9 @@ const language = require('@google-cloud/language').v1beta2
 const { Chunk, ChunkList } = require('./chunks')
 const DEFAULT_CLASS = 'ww'
 
+const cloneChunk = chunk => Object.assign(new Chunk(), chunk)
+const cloneChunkList = chunks => chunks.map(cloneChunk)
+
 class Budou {
   /**
    * @param {Object} client Instance of @google-cloud/language client
@@ -181,9 +184,7 @@ class Budou {
   _concatenateInner (chunks, direction) {
     let tmpBucket = []
     const reverseIfNoDirection = arr => (direction ? arr : arr.slice().reverse())
-    // Deep copy chunks
-    const chunksClone = chunks.map(chunk => Object.assign(new Chunk(), chunk))
-    const sourceChunks = reverseIfNoDirection(chunksClone)
+    const sourceChunks = reverseIfNoDirection(cloneChunkList(chunks))
     const targetChunks = new ChunkList()
 
     sourceChunks.forEach(chunk => {
