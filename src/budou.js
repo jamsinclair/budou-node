@@ -299,7 +299,7 @@ class Budou {
         type: 'PLAIN_TEXT'
       },
       features: {
-        extract_syntax: true
+        extractSyntax: true
       },
       encodingType
     }
