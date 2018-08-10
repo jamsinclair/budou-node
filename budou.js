@@ -162,48 +162,6 @@ class Budou {
   }
 
   /**
-   * Returns the list of annotations from the given text
-   * @param {String} text String to analyse
-   * @param {String} [language] language code
-   * @param {String} [encodingType] Requested encodingType
-   * @return {Promise<Object>} Promise that resolves to AnnotateTextResponse Object
-   */
-  _getAnnotations (text, language, encodingType = 'UTF32') {
-    const request = {
-      document: {
-        content: text,
-        type: 'PLAIN_TEXT'
-      },
-      features: {
-        extract_syntax: true
-      },
-      encodingType
-    }
-
-    if (language) {
-      request.document.language = language
-    }
-
-    return this.client.annotateText(request)
-  }
-
-  /**
-   * Removes unnecessary line breaks and white spaces
-   *
-   * @param {String} source HTML code to be processed
-   * @return {String} The processed text content of HTML fragment
-   */
-  _preprocess (source) {
-    const doc = cheerio.load(Buffer.from(source, 'utf8'))
-    // Strip line breaks, and extra whitespace
-    return doc
-      .text()
-      .trim()
-      .replace(/\r?\n|\r/g, '')
-      .replace(/ +(?= )/g, '')
-  }
-
-  /**
    * Resolves chunk dependency by concatenating them
    * @param {ChunkList} chunks Chunk list to resolve
    * @return {ChunkList} A chunk list
