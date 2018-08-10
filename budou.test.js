@@ -1,4 +1,5 @@
 const Budou = require('./budou')
+const cases = require('./tests/cases.json')
 const { Chunk, ChunkList } = require('./chunks')
 
 describe('Budou._preprocess', () => {
@@ -189,5 +190,24 @@ describe('Budou._htmlSerialize', () => {
       '<span><span class="foo">去年</span>インフルエンザに<span class="foo">かかった。</span></span>'
     const result = parser._htmlSerialize(chunks, attributes, 6)
     expect(result).toEqual(expected)
+  })
+})
+
+describe('Budou.parse', async () => {
+  const parser = new Budou()
+  parser._getAnnotations = jest.fn()
+
+  test('it should correctly parse chunks for given sentence', async () => {
+    expect.assertions(7)
+
+    for (let i = 0; i < cases.length; i++) {
+      const { expected, language, sentence, tokens } = cases[i]
+      // Mocks external getAnnotations Google API request
+      parser._getAnnotations.mockReturnValue(Promise.resolve({ tokens }))
+      // to do mock entities call
+
+      const { chunks } = await parser.parse(sentence, { language, useCache: false })
+      expect(chunks.map(chunk => chunk.word)).toEqual(expected)
+    }
   })
 })
