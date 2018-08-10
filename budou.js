@@ -113,6 +113,22 @@ class Budou {
   }
 
   /**
+   * Removes unnecessary line breaks and white spaces
+   *
+   * @param {String} source HTML code to be processed
+   * @return {String} The processed text content of HTML fragment
+   */
+  _preprocess (source) {
+    const doc = JSDOM.fragment(Buffer.from(source, 'utf8'))
+    // Strip line breaks, and extra whitespace
+    return doc
+      .textContent
+      .trim()
+      .replace(/\r?\n|\r/g, '')
+      .replace(/ +(?= )/g, '')
+  }
+
+  /**
    * Returns a chunk list retrieved from Syntax Analysis results.
    * @param {String} text String to analyse
    * @param {String} [language] language code
@@ -252,7 +268,31 @@ class Budou {
     return targetChunks
   }
 
-  _htmlSerialize () {}
+  /**
+   * Returns the list of annotations from the given text
+   * @param {String} text String to analyse
+   * @param {String} [language] language code
+   * @param {String} [encodingType] Requested encodingType
+   * @return {Promise<Object>} Promise that resolves to AnnotateTextResponse Object
+   */
+  _getAnnotations (text, language, encodingType = 'UTF32') {
+    const request = {
+      document: {
+        content: text,
+        type: 'PLAIN_TEXT'
+      },
+      features: {
+        extract_syntax: true
+      },
+      encodingType
+    }
+
+    if (language) {
+      request.document.language = language
+    }
+
+    return this.client.annotateText(request)
+  }
 }
 
 module.exports = Budou
