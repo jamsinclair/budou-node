@@ -89,6 +89,30 @@ class Budou {
   }
 
   /**
+   * Returns a chunk list by using Google Cloud Natural Language API
+   * @param {String} text String to parse
+   * @param {String} [language] language code
+   * @param {Boolean} [useEntity] Whether to use entities in Natural Language API response
+   * @return {Promise<Object>} ChunksResult. Contains chunks, language and tokens
+   */
+  _getChunksWithApi (text, language, useEntity) {
+    return this._getSourceChunks(text, language)
+      .then(({ chunks, tokens, language }) => {
+        if (useEntity) {
+          // @todo implement entities methods
+        }
+
+        return { chunks, tokens, language }
+      })
+      .then(({ chunks, tokens, language }) => {
+        chunks = this._resolveDependency(chunks)
+        chunks = this._insertBreakline(chunks)
+
+        return { chunks, tokens, language }
+      })
+  }
+
+  /**
    * Returns a chunk list retrieved from Syntax Analysis results.
    * @param {String} text String to analyse
    * @param {String} [language] language code
@@ -162,8 +186,6 @@ class Budou {
       .replace(/\r?\n|\r/g, '')
       .replace(/ +(?= )/g, '')
   }
-
-  _getChunksWithApi () {}
 
   /**
    * Resolves chunk dependency by concatenating them
