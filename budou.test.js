@@ -156,7 +156,7 @@ describe('Budou._insertBreakline', () => {
   })
 })
 
-describe.only('Budou._htmlSerialize', () => {
+describe('Budou._htmlSerialize', () => {
   const parser = new Budou()
 
   test('The chunks should be compiled to HTML code', () => {
