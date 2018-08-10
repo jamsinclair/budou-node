@@ -220,18 +220,40 @@ describe('Budou._groupChunksByEntities', () => {
 describe('Budou.parse', async () => {
   const parser = new Budou()
   parser._getAnnotations = jest.fn()
+  parser._getEntities = jest.fn()
 
-  test('it should correctly parse chunks for given sentences', async () => {
+  test('it should correctly parse chunks for given sentences (entity mode off)', async () => {
     expect.assertions(7)
 
     for (let i = 0; i < cases.length; i++) {
       const { expected, language, sentence, tokens } = cases[i]
       // Mocks external getAnnotations Google API request
       parser._getAnnotations.mockReturnValue(Promise.resolve({ tokens }))
-      // to do mock entities call
 
       const { chunks } = await parser.parse(sentence, { language, useCache: false })
       expect(chunks.map(chunk => chunk.word)).toEqual(expected)
+    }
+  })
+
+  test('it should correctly parse chunks for given sentences (entity mode on)', async () => {
+    expect.assertions(3)
+
+    for (let i = 0; i < cases.length; i++) {
+      const { expected_with_entity, language, sentence, tokens, entities = [] } = cases[i]
+      if (!expected_with_entity) {
+        continue
+      }
+
+      // Mocks external getAnnotations Google API request
+      parser._getAnnotations.mockReturnValue(Promise.resolve({ tokens }))
+      parser._getEntities.mockReturnValue(Promise.resolve(entities))
+
+      const { chunks } = await parser.parse(sentence, {
+        language,
+        useCache: false,
+        useEntity: true
+      })
+      expect(chunks.map(chunk => chunk.word)).toEqual(expected_with_entity)
     }
   })
 })
