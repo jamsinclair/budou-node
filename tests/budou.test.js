@@ -193,6 +193,30 @@ describe('Budou._htmlSerialize', () => {
   })
 })
 
+describe('Budou._groupChunksByEntities', () => {
+  const parser = new Budou()
+
+  test('Entities should correctly concatenate', () => {
+    // chunks: foo bar baz
+    // entity: ___ bar ___
+    const chunks = new ChunkList(new Chunk('foo'), new Chunk('bar'), new Chunk('baz'))
+    const entities = [{ beginOffset: 3, content: 'bar' }]
+    const expected = ['foo', 'bar', 'baz']
+    const result = parser._groupChunksByEntities(chunks, entities)
+    expect(result.map(chunk => chunk.word)).toEqual(expected)
+  })
+
+  test('Overlapping entities should correctly concatenate', () => {
+    // chunks foo bar baz
+    // entity: foo ba_ ___
+    const chunks = new ChunkList(new Chunk('foo'), new Chunk('bar'), new Chunk('baz'))
+    const entities = [{ beginOffset: 0, content: 'fooba' }]
+    const expected = ['foobar', 'baz']
+    const result = parser._groupChunksByEntities(chunks, entities)
+    expect(result.map(chunk => chunk.word)).toEqual(expected)
+  })
+})
+
 describe('Budou.parse', async () => {
   const parser = new Budou()
   parser._getAnnotations = jest.fn()

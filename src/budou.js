@@ -163,6 +163,25 @@ class Budou {
   }
 
   /**
+   * Groups chunks by entities retrieved from NL API Entity Analysis
+   * @param {ChunkList} chunks
+   * @param {Array} entities
+   * @return {ChunkList}
+   */
+  _groupChunksByEntities (chunks, entities) {
+    for (let entity of entities) {
+      const chunksToConcat = chunks.getOverlaps(entity.beginOffset, entity.content.length)
+      if (!chunksToConcat.length) {
+        continue
+      }
+      const newChunkWord = chunksToConcat.map(chunk => chunk.word).join('')
+      const newChunk = new Chunk(newChunkWord)
+      chunks.swap(chunksToConcat, newChunk)
+    }
+    return chunks
+  }
+
+  /**
    * Returns concatenated HTML code with SPAN tag
    * @param {ChunkList} chunks The list of chunks to be processed
    * @param {Object} attributes Key/Value pairs of the span attributes
