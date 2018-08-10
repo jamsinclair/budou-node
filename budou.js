@@ -50,20 +50,22 @@ class Budou {
     if (language === 'ko') {
       // Korean has spaces between words, so this simply parses words by space
       // and wrap them as chunks.
-      chunksResult = this._getChunksPerSpace(text, language)
+      chunksResult = Promise.resolve(this._getChunksPerSpace(text, language))
     } else {
       chunksResult = this._getChunksWithApi(inputText, language, useEntity)
     }
 
     attributes = Object.assign({ class: DEFAULT_CLASS }, attributes)
-    const { chunks, tokens } = chunksResult
-    const html = this._htmlSerialize(chunks, attributes, maxLength)
-    const result = { chunks, tokens, html, language: chunksResult.language }
-    if (useCache) {
-      // @todo set data in cache
-    }
 
-    return result
+    return chunksResult.then(({ chunks, tokens, language }) => {
+      const html = this._htmlSerialize(chunks, attributes, maxLength)
+      const result = { chunks, tokens, html, language }
+      if (useCache) {
+        // @todo set result in cache
+      }
+
+      return result
+    })
   }
 
   /**
