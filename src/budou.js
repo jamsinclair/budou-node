@@ -288,6 +288,47 @@ class Budou {
 
     return this.client.annotateText(request)
   }
+
+  /**
+   * Returns the list of entities from the given text
+   * @param {String} text String to analyse
+   * @param {String} [language] language code
+   * @param {String} [encodingType] Requested encodingType
+   * @return {Promise<Array>} Promise that resolves to an array of entities
+   */
+  _getEntities (text, language, encodingType = 'UTF32') {
+    const request = {
+      document: {
+        content: text,
+        type: 'PLAIN_TEXT'
+      },
+      encodingType
+    }
+
+    if (language) {
+      request.document.language = language
+    }
+
+    return this.client.analyzeEntities(request).then(entities => {
+      const result = []
+      for (let entity of entities) {
+        const { mentions } = entity
+
+        if (!mentions) {
+          continue
+        }
+
+        const entityText = mentions[0].text
+        let offset = entityText.beginOffset
+
+        for (let word of entityText.content.split(' ')) {
+          result.push({ content: word, beginOffset: offset })
+          offset += word.length
+        }
+      }
+      return result
+    })
+  }
 }
 
 module.exports = Budou
