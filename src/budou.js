@@ -104,11 +104,10 @@ class Budou {
           return { chunks, tokens, language }
         }
 
-        return this._getEntities(text, language)
-          .then(entities => {
-            chunks = this._groupChunksByEntities(chunks, entities)
-            return { chunks, tokens, language }
-          })
+        return this._getEntities(text, language).then(entities => {
+          chunks = this._groupChunksByEntities(chunks, entities)
+          return { chunks, tokens, language }
+        })
       })
       .then(({ chunks, tokens, language }) => {
         chunks = this._resolveDependency(chunks)
