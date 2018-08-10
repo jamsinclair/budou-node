@@ -100,11 +100,15 @@ class Budou {
   _getChunksWithApi (text, language, useEntity) {
     return this._getSourceChunks(text, language)
       .then(({ chunks, tokens, language }) => {
-        if (useEntity) {
-          // @todo implement entities methods
+        if (!useEntity) {
+          return { chunks, tokens, language }
         }
 
-        return { chunks, tokens, language }
+        return this._getEntities(text, language)
+          .then(entities => {
+            chunks = this._groupChunksByEntities(chunks, entities)
+            return { chunks, tokens, language }
+          })
       })
       .then(({ chunks, tokens, language }) => {
         chunks = this._resolveDependency(chunks)
