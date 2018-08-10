@@ -164,8 +164,8 @@ class Budou {
 
   /**
    * Resolves chunk dependency by concatenating them
-   * @param {Object} chunks Chunk list to resolve
-   * @return {Object} A chunk list
+   * @param {ChunkList} chunks Chunk list to resolve
+   * @return {ChunkList} A chunk list
    */
   _resolveDependency (chunks) {
     chunks = this._concatenateInner(chunks, true)
@@ -174,9 +174,9 @@ class Budou {
 
   /**
    * Concatenates chunks based on each chunk's dependency
-   * @param {Object} chunks Chunks to concatenate
+   * @param {ChunkList} chunks Chunks to concatenate
    * @param {Boolean} direction Direction of concatenation process. True for forward
-   * @return {Object} A chunk list
+   * @return {ChunkList} A chunk list
    */
   _concatenateInner (chunks, direction) {
     let tmpBucket = []
