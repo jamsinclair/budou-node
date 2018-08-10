@@ -178,7 +178,7 @@ class Budou {
       if (chunk.isSpace() && root.textContent.length) {
         // We want to preserve space in cases like "Hello 你好"
         // But the space in " 你好" can be discarded.
-        root.appendChild(document.createTextNode(' '))
+        root.innerHTML += ' '
       } else if (chunk.hasCjk() && !(maxLength && chunk.word.length > maxLength)) {
         const ele = document.createElement('span')
         ele.textContent += chunk.word
@@ -189,6 +189,7 @@ class Budou {
       } else {
         // Otherwise add word without span tag for non-CJK text (e.g. English)
         // and CJK text that exceeds max length
+        // Use createTextNode to escape any special chars
         root.appendChild(document.createTextNode(chunk.word))
       }
     })
