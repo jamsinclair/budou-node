@@ -50,7 +50,7 @@ class Budou {
     if (language === 'ko') {
       // Korean has spaces between words, so this simply parses words by space
       // and wrap them as chunks.
-      chunksResult = Promise.resolve(this._getChunksPerSpace(text, language))
+      chunksResult = Promise.resolve(this._getChunksPerSpace(inputText, language))
     } else {
       chunksResult = this._getChunksWithApi(inputText, language, useEntity)
     }
