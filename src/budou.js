@@ -331,7 +331,8 @@ class Budou {
       request.document.language = language
     }
 
-    return this.client.analyzeEntities(request).then(entities => {
+    return this.client.analyzeEntities(request).then(data => {
+      const { entities = [] } = data[0] || {}
       const result = []
       for (let entity of entities) {
         const { mentions } = entity
