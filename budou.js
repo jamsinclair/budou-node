@@ -1,5 +1,5 @@
-const { JSDOM } = require('jsdom')
 const language = require('@google-cloud/language').v1beta2
+const { JSDOM } = require('jsdom')
 const { Chunk, ChunkList } = require('./chunks')
 const DEFAULT_CLASS = 'ww'
 
