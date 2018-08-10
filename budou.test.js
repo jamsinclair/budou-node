@@ -1,5 +1,5 @@
 const Budou = require('./budou')
-const { Chunk } = require('./chunks')
+const { Chunk, ChunkList } = require('./chunks')
 
 describe('Budou._preprocess', () => {
   test('BR tags, line breaks, and unnecessary spaces should be removed', () => {
@@ -116,5 +116,29 @@ describe('Budou._getSourceChunks', () => {
     return instance._getSourceChunks('六本木ヒルズで、「ご飯」を食べます。').then(({ chunks }) => {
       expect(chunks.map(chunk => chunk.dependency)).toEqual(expected.map(chunk => chunk.dependency))
     })
+  })
+})
+
+describe('Budou._concatenateInner', () => {
+  const instance = new Budou()
+
+  let chunks = new ChunkList()
+  chunks.push(new Chunk('ab', { dependency: null }))
+  chunks.push(new Chunk('cde', { dependency: true }))
+  chunks.push(new Chunk('fgh', { dependency: false }))
+
+  test('Chunks should be concatenated if they depend on the following word', () => {
+    const processedChunks = instance._concatenateInner(chunks, true)
+    expect(processedChunks.map(chunk => chunk.word)).toEqual(['ab', 'cdefgh'])
+  })
+  test("Dependency should persist even if it's concatenated by others", () => {
+    const processedChunks = instance._concatenateInner(chunks, true)
+    expect(processedChunks.map(chunk => chunk.dependency)).toEqual([null, false])
+  })
+
+  test('Chunks should be concatenated if they depend on the previous word', () => {
+    let processedChunks = instance._concatenateInner(chunks, true)
+    processedChunks = instance._concatenateInner(processedChunks, false)
+    expect(processedChunks.map(chunk => chunk.word)).toEqual(['abcdefgh'])
   })
 })

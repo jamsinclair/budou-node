@@ -161,6 +161,40 @@ class Budou {
   }
 
   _getChunksWithApi () {}
+  /**
+   * Concatenates chunks based on each chunk's dependency
+   * @param {Array} chunks Chunks to concatenate
+   * @param {Boolean} direction Direction of concatenation process. True for forward
+   */
+  _concatenateInner (chunks, direction) {
+    let tmpBucket = []
+    const reverseIfNoDirection = arr => (direction ? arr : arr.slice().reverse())
+    // Deep copy chunks
+    const chunksClone = chunks.map(chunk => Object.assign(new Chunk(), chunk))
+    const sourceChunks = reverseIfNoDirection(chunksClone)
+    const targetChunks = new ChunkList()
+
+    sourceChunks.forEach(chunk => {
+      tmpBucket.push(chunk)
+
+      // If Chunk has matched dependency, do concatenation
+      // Or when direction equals false and chunk is SPACE, concatenate to the previous chunk
+      if (chunk.dependency === direction || (direction === false && chunk.isSpace())) {
+        return
+      }
+
+      const newWord = reverseIfNoDirection(tmpBucket)
+        .map(tmpChunk => tmpChunk.word)
+        .join('')
+      chunk.word = newWord
+      targetChunks.push(chunk)
+      tmpBucket = []
+    })
+
+    targetChunks.concat(tmpBucket)
+    return reverseIfNoDirection(targetChunks)
+  }
+
   _htmlSerialize () {}
 }
 
