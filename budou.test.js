@@ -28,7 +28,7 @@ describe('Budou._getChunksPerSpace', () => {
 })
 
 describe('Budou._getSourceChunks', () => {
-  const instance = new Budou()
+  const parser = new Budou()
   const tokens = [
     {
       dependencyEdge: { headTokenIndex: 1, label: 'NN' },
@@ -101,26 +101,26 @@ describe('Budou._getSourceChunks', () => {
   ]
 
   beforeEach(() => {
-    instance._getAnnotations = jest.fn().mockReturnValue(Promise.resolve({ tokens }))
+    parser._getAnnotations = jest.fn().mockReturnValue(Promise.resolve({ tokens }))
   })
 
   test('Words should be match between input text and retrieved chunks', () => {
     expect.assertions(1)
-    return instance._getSourceChunks('六本木ヒルズで、「ご飯」を食べます。').then(({ chunks }) => {
+    return parser._getSourceChunks('六本木ヒルズで、「ご飯」を食べます。').then(({ chunks }) => {
       expect(chunks.map(chunk => chunk.word)).toEqual(expected.map(chunk => chunk.word))
     })
   })
 
   test('Dependency should be match between input text and retrieved chunks', () => {
     expect.assertions(1)
-    return instance._getSourceChunks('六本木ヒルズで、「ご飯」を食べます。').then(({ chunks }) => {
+    return parser._getSourceChunks('六本木ヒルズで、「ご飯」を食べます。').then(({ chunks }) => {
       expect(chunks.map(chunk => chunk.dependency)).toEqual(expected.map(chunk => chunk.dependency))
     })
   })
 })
 
 describe('Budou._concatenateInner', () => {
-  const instance = new Budou()
+  const parser = new Budou()
 
   let chunks = new ChunkList()
   chunks.push(new Chunk('ab', { dependency: null }))
@@ -128,30 +128,30 @@ describe('Budou._concatenateInner', () => {
   chunks.push(new Chunk('fgh', { dependency: false }))
 
   test('Chunks should be concatenated if they depend on the following word', () => {
-    const processedChunks = instance._concatenateInner(chunks, true)
+    const processedChunks = parser._concatenateInner(chunks, true)
     expect(processedChunks.map(chunk => chunk.word)).toEqual(['ab', 'cdefgh'])
   })
   test("Dependency should persist even if it's concatenated by others", () => {
-    const processedChunks = instance._concatenateInner(chunks, true)
+    const processedChunks = parser._concatenateInner(chunks, true)
     expect(processedChunks.map(chunk => chunk.dependency)).toEqual([null, false])
   })
 
   test('Chunks should be concatenated if they depend on the previous word', () => {
-    let processedChunks = instance._concatenateInner(chunks, true)
-    processedChunks = instance._concatenateInner(processedChunks, false)
+    let processedChunks = parser._concatenateInner(chunks, true)
+    processedChunks = parser._concatenateInner(processedChunks, false)
     expect(processedChunks.map(chunk => chunk.word)).toEqual(['abcdefgh'])
   })
 })
 
 describe('Budou._insertBreakline', () => {
-  const instance = new Budou()
+  const parser = new Budou()
 
   let chunks = new ChunkList()
   chunks.push(new Chunk('あああ '))
   chunks.push(new Chunk('abc '))
 
   test('CJK chunks /w trailing space should be trimmed and breakline inserted after', () => {
-    const result = instance._insertBreakline(chunks)
+    const result = parser._insertBreakline(chunks)
     expect(result.map(chunk => chunk.word)).toEqual(['あああ', '\n', 'abc '])
   })
 })
