@@ -155,3 +155,39 @@ describe('Budou._insertBreakline', () => {
     expect(result.map(chunk => chunk.word)).toEqual(['あああ', '\n', 'abc '])
   })
 })
+
+describe.only('Budou._htmlSerialize', () => {
+  const parser = new Budou()
+
+  test('The chunks should be compiled to HTML code', () => {
+    const chunks = [
+      new Chunk('Hello'),
+      Chunk.space(),
+      new Chunk('今天'),
+      new Chunk('天气'),
+      new Chunk('很好')
+    ]
+    const attributes = { class: 'foo' }
+    const expected =
+      '<span>Hello <span class="foo">今天</span><span class="foo">天气</span><span class="foo">很好</span></span>'
+    const result = parser._htmlSerialize(chunks, attributes)
+    expect(result).toEqual(expected)
+  })
+
+  test('HTML tags included in a chunk should be encoded', () => {
+    const chunks = [new Chunk('Hey<'), new Chunk('<script>alert(1)</script>'), new Chunk('>folks')]
+    const attributes = { class: 'foo' }
+    const expected = '<span>Hey&lt;&lt;script&gt;alert(1)&lt;/script&gt;&gt;folks</span>'
+    const result = parser._htmlSerialize(chunks, attributes)
+    expect(result).toEqual(expected)
+  })
+
+  test('Chunks that exceed the max length should not be enclosed by a span', () => {
+    const chunks = [new Chunk('去年'), new Chunk('インフルエンザに'), new Chunk('かかった。')]
+    const attributes = { class: 'foo' }
+    const expected =
+      '<span><span class="foo">去年</span>インフルエンザに<span class="foo">かかった。</span></span>'
+    const result = parser._htmlSerialize(chunks, attributes, 6)
+    expect(result).toEqual(expected)
+  })
+})

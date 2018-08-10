@@ -121,8 +121,7 @@ class Budou {
   _preprocess (source) {
     const doc = JSDOM.fragment(Buffer.from(source, 'utf8'))
     // Strip line breaks, and extra whitespace
-    return doc
-      .textContent
+    return doc.textContent
       .trim()
       .replace(/\r?\n|\r/g, '')
       .replace(/ +(?= )/g, '')
@@ -159,6 +158,41 @@ class Budou {
     }
 
     return this._getAnnotations(text, language).then(getChunksResult)
+  }
+
+  /**
+   * Returns concatenated HTML code with SPAN tag
+   * @param {ChunkList} chunks The list of chunks to be processed
+   * @param {Object} attributes Key/Value pairs of the span attributes
+   * @param {Number} maxLength Maximum length of span enclosed chunk
+   * @return {String} The organized HTML code
+   */
+  _htmlSerialize (chunks, attributes, maxLength) {
+    const dom = new JSDOM('<span>')
+    const { document } = dom.window
+    const root = document.querySelector('span')
+
+    chunks.forEach(chunk => {
+      if (chunk.isSpace() && root.textContent.length) {
+        // We want to preserve space in cases like "Hello 你好"
+        // But the space in " 你好" can be discarded.
+        root.appendChild(document.createTextNode(' '))
+      } else if (chunk.hasCjk() && !(maxLength && chunk.word.length > maxLength)) {
+        const ele = document.createElement('span')
+        ele.textContent += chunk.word
+        for (let key of Object.keys(attributes)) {
+          ele.setAttribute(key, attributes[key])
+        }
+        root.appendChild(ele)
+      } else {
+        // Otherwise add word without span tag for non-CJK text (e.g. English)
+        // and CJK text that exceeds max length
+        root.appendChild(document.createTextNode(chunk.word))
+      }
+    })
+
+    // @note Do we sanitize this HTML? What attributes should we allow/disallow?
+    return root.outerHTML
   }
 
   /**
