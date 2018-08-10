@@ -197,7 +197,7 @@ describe('Budou.parse', async () => {
   const parser = new Budou()
   parser._getAnnotations = jest.fn()
 
-  test('it should correctly parse chunks for given sentence', async () => {
+  test('it should correctly parse chunks for given sentences', async () => {
     expect.assertions(7)
 
     for (let i = 0; i < cases.length; i++) {
