@@ -38,10 +38,10 @@ The path of file can be set as an ENV var, `GOOGLE_APPLICATION_CREDENTIALS` , or
 an option to the `authenticate` method.
 
 ```js
-const budou = require('budou')
+const Budou = require('budou')
 
 // Login to Cloud Natural Language API with credentials
-const parser = budou.authenticate({ keyFilename: '/path/to/credentials.json' })
+const parser = Budou.authenticate({ keyFilename: '/path/to/credentials.json' })
 
 // Set options and parse text for result
 const options = { attributes: { class: 'wordwrap' }, language: 'ja' }
