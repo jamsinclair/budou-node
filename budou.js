@@ -208,6 +208,28 @@ class Budou {
     return reverseIfNoDirection(targetChunks)
   }
 
+  /**
+   * Inserts a breakline instead of a trailing space if the chunk is in CJK
+   * @param {ChunkList} chunks
+   * @return {ChunkList} A chunk list
+   */
+  _insertBreakline (chunks) {
+    const sourceChunks = cloneChunkList(chunks)
+    const targetChunks = new ChunkList()
+
+    sourceChunks.forEach(chunk => {
+      if (chunk.word.slice(-1) === ' ' && chunk.hasCjk()) {
+        chunk.word = chunk.word.slice(0, -1)
+        targetChunks.push(chunk)
+        targetChunks.push(Chunk.breakline())
+      } else {
+        targetChunks.push(chunk)
+      }
+    })
+
+    return targetChunks
+  }
+
   _htmlSerialize () {}
 }
 

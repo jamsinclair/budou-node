@@ -142,3 +142,16 @@ describe('Budou._concatenateInner', () => {
     expect(processedChunks.map(chunk => chunk.word)).toEqual(['abcdefgh'])
   })
 })
+
+describe('Budou._insertBreakline', () => {
+  const instance = new Budou()
+
+  let chunks = new ChunkList()
+  chunks.push(new Chunk('あああ '))
+  chunks.push(new Chunk('abc '))
+
+  test('CJK chunks /w trailing space should be trimmed and breakline inserted after', () => {
+    const result = instance._insertBreakline(chunks)
+    expect(result.map(chunk => chunk.word)).toEqual(['あああ', '\n', 'abc '])
+  })
+})
