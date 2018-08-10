@@ -2,11 +2,11 @@
   "name": "budou",
   "version": "0.1.0",
   "description": "Node.js port of tool for beautiful line breaking in CJK (Chinese, Japanese, and Korean)",
-  "main": "index.js",
+  "main": "src/budou.js",
   "author": "Jamie Sinclair",
   "license": "MIT",
   "scripts": {
-    "format": "prettier-standard '*.js'",
+    "format": "prettier-standard '**/*.js'",
     "test": "jest"
   },
   "dependencies": {
