@@ -308,7 +308,7 @@ class Budou {
       request.document.language = language
     }
 
-    return this.client.annotateText(request)
+    return this.client.annotateText(request).then(data => data[0])
   }
 
   /**
