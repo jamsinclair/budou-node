@@ -1,4 +1,4 @@
-const { Chunk, ChunkList } = require('./chunks')
+const { Chunk, ChunkList } = require('../src/chunks')
 
 describe('Chunk.maybeAddDependency', () => {
   test('Dependency should not be added if the chunk does not belong to dependent labels', () => {

@@ -1,6 +1,6 @@
-const Budou = require('./budou')
-const cases = require('./tests/cases.json')
-const { Chunk, ChunkList } = require('./chunks')
+const Budou = require('../src/budou')
+const cases = require('./cases.json')
+const { Chunk, ChunkList } = require('../src/chunks')
 
 describe('Budou._preprocess', () => {
   test('BR tags, line breaks, and unnecessary spaces should be removed', () => {

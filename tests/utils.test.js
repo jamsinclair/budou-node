@@ -1,4 +1,4 @@
-const { hasCjk, isOpenPunctuationChar } = require('./utils')
+const { hasCjk, isOpenPunctuationChar } = require('../src/utils')
 
 // @todo Use generator function to build random strings for ranges?
 const CHINESE_DUMMY_TEXT = '能記安全償与属護月孫支人受。'
