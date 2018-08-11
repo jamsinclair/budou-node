@@ -217,25 +217,32 @@ describe('Budou._groupChunksByEntities', () => {
   })
 })
 
-describe('Budou.parse', async () => {
+describe('Budou.parse', () => {
   const parser = new Budou()
   parser._getAnnotations = jest.fn()
   parser._getEntities = jest.fn()
 
-  test('it should correctly parse chunks for given sentences (entity mode off)', async () => {
+  test('it should correctly parse chunks for given sentences (entity mode off)', () => {
+    const assertions = []
     expect.assertions(7)
 
     for (let i = 0; i < cases.length; i++) {
       const { expected, language, sentence, tokens } = cases[i]
       // Mocks external getAnnotations Google API request
-      parser._getAnnotations.mockReturnValue(Promise.resolve({ tokens }))
+      parser._getAnnotations.mockReturnValueOnce(Promise.resolve({ tokens }))
 
-      const { chunks } = await parser.parse(sentence, { language, useCache: false })
-      expect(chunks.map(chunk => chunk.word)).toEqual(expected)
+      const assertion = parser.parse(sentence, { language, useCache: false })
+        .then(({ chunks }) => {
+          expect(chunks.map(chunk => chunk.word)).toEqual(expected)
+        })
+      assertions.push(assertion)
     }
+
+    return Promise.all(assertions)
   })
 
-  test('it should correctly parse chunks for given sentences (entity mode on)', async () => {
+  test('it should correctly parse chunks for given sentences (entity mode on)', () => {
+    const assertions = []
     expect.assertions(3)
 
     for (let i = 0; i < cases.length; i++) {
@@ -244,16 +251,20 @@ describe('Budou.parse', async () => {
         continue
       }
 
-      // Mocks external getAnnotations Google API request
-      parser._getAnnotations.mockReturnValue(Promise.resolve({ tokens }))
-      parser._getEntities.mockReturnValue(Promise.resolve(entities))
+      // Mock external Google API requests
+      parser._getAnnotations.mockReturnValueOnce(Promise.resolve({ tokens }))
+      parser._getEntities.mockReturnValueOnce(Promise.resolve(entities))
 
-      const { chunks } = await parser.parse(sentence, {
+     const assertion = parser.parse(sentence, {
         language,
         useCache: false,
         useEntity: true
+      }).then(({ chunks }) => {
+        expect(chunks.map(chunk => chunk.word)).toEqual(expected_with_entity)
       })
-      expect(chunks.map(chunk => chunk.word)).toEqual(expected_with_entity)
+      assertions.push(assertion)
     }
+
+    return Promise.all(assertions)
   })
 })
