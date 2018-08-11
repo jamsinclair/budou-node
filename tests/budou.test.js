@@ -231,10 +231,9 @@ describe('Budou.parse', () => {
       // Mocks external getAnnotations Google API request
       parser._getAnnotations.mockReturnValueOnce(Promise.resolve({ tokens }))
 
-      const assertion = parser.parse(sentence, { language, useCache: false })
-        .then(({ chunks }) => {
-          expect(chunks.map(chunk => chunk.word)).toEqual(expected)
-        })
+      const assertion = parser.parse(sentence, { language, useCache: false }).then(({ chunks }) => {
+        expect(chunks.map(chunk => chunk.word)).toEqual(expected)
+      })
       assertions.push(assertion)
     }
 
@@ -255,13 +254,15 @@ describe('Budou.parse', () => {
       parser._getAnnotations.mockReturnValueOnce(Promise.resolve({ tokens }))
       parser._getEntities.mockReturnValueOnce(Promise.resolve(entities))
 
-     const assertion = parser.parse(sentence, {
-        language,
-        useCache: false,
-        useEntity: true
-      }).then(({ chunks }) => {
-        expect(chunks.map(chunk => chunk.word)).toEqual(expected_with_entity)
-      })
+      const assertion = parser
+        .parse(sentence, {
+          language,
+          useCache: false,
+          useEntity: true
+        })
+        .then(({ chunks }) => {
+          expect(chunks.map(chunk => chunk.word)).toEqual(expected_with_entity)
+        })
       assertions.push(assertion)
     }
 
