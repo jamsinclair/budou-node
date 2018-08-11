@@ -1,4 +1,4 @@
-const language = require('@google-cloud/language').v1beta2
+const { LanguageServiceClient } = require('@google-cloud/language').v1beta2
 const { JSDOM } = require('jsdom')
 const { Chunk, ChunkList } = require('./chunks')
 const DEFAULT_CLASS = 'ww'
@@ -23,7 +23,7 @@ class Budou {
    * @return {Budou}
    */
   static authenticate (options) {
-    const client = new language.LanguageServiceClient(options)
+    const client = new LanguageServiceClient(options)
     return new Budou(client)
   }
 
