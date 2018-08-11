@@ -1,10 +1,12 @@
 const { LanguageServiceClient } = require('@google-cloud/language').v1beta2
 const { JSDOM } = require('jsdom')
 const { Chunk, ChunkList } = require('./chunks')
+const Cache = require('./cache')
 const DEFAULT_CLASS = 'ww'
 
 const cloneChunk = chunk => Object.assign(new Chunk(), chunk)
 const cloneChunkList = chunks => chunks.map(cloneChunk)
+const cache = new Cache()
 
 class Budou {
   /**
@@ -42,7 +44,10 @@ class Budou {
    */
   parse (source, { attributes = {}, language, maxLength, useCache = true, useEntity = false } = {}) {
     if (useCache) {
-      // @todo get data from cache
+      const result = cache.get(source, language)
+      if (result) {
+        return Promise.resolve(result)
+      }
     }
     const inputText = this._preprocess(source)
 
@@ -61,7 +66,7 @@ class Budou {
       const html = this._htmlSerialize(chunks, attributes, maxLength)
       const result = { chunks, tokens, html, language }
       if (useCache) {
-        // @todo set result in cache
+        cache.set(source, language, result)
       }
 
       return result
