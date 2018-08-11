@@ -9,7 +9,6 @@ const CACHE_SALT = '2018-08-11'
 const DEFAULT_FILE_PATH = './budou-cache'
 
 class BudouCache {
-  static 
   get (source, language) {}
   set (source, language, value) {}
 
@@ -20,7 +19,10 @@ class BudouCache {
    */
   _getCacheKey (source, language = '') {
     const keySource = `${CACHE_SALT}:${source}:${language}`
-    return crypto.createHash('md5').update(keySource).digest('hex')
+    return crypto
+      .createHash('md5')
+      .update(keySource)
+      .digest('hex')
   }
 }
 
@@ -54,7 +56,7 @@ class LowCache extends BudouCache {
   _initDb () {
     if (!this.db) {
       const jsonPath = this._getCacheFilepath()
-  
+
       this.db = low(new FileSync(jsonPath))
       this.db.defaults({}).write()
     }
