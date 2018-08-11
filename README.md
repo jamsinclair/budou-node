@@ -77,7 +77,7 @@ target each `<span>` tag with `display: inline-block` in CSS.
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | attributes | Object | `{ class: 'ww' }` | A key-value mapping for attributes of output `<span>` tags. |
-| useCache | Boolean | `true` | Whether to use caching. (Caching yet to be implemented) |
+| useCache | Boolean | `true` | Whether to use caching. Helps reduce calls to NL API for repeated text. |
 | language | String | `null` | Language of the text. If `null` is provided, NL API tries to detect from the input text. |
 | useEntity | Boolean | `false` | Whether to use Entity mode. |
 | maxLength | Number | `null` | Maximum chunk character length. If a chunk is longer than this it will not be wrapped in a `<span>` tag. |
