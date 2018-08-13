@@ -1,7 +1,9 @@
+const stripTags = require('striptags')
+const escapeHtml = require('escape-html')
 const { LanguageServiceClient } = require('@google-cloud/language').v1beta2
-const { JSDOM } = require('jsdom')
-const { Chunk, ChunkList } = require('./chunks')
 const Cache = require('./cache')
+const { Chunk, ChunkList } = require('./chunks')
+const { createElementString } = require('./utils')
 const DEFAULT_CLASS = 'ww'
 
 const cloneChunk = chunk => Object.assign(new Chunk(), chunk)
@@ -123,15 +125,16 @@ class Budou {
   }
 
   /**
-   * Removes unnecessary line breaks and white spaces
+   * Removes unnecessary line breaks and white spaces and returns
+   * html text content.
    *
    * @param {String} source HTML code to be processed
    * @return {String} The processed text content of HTML fragment
    */
   _preprocess (source) {
-    const doc = JSDOM.fragment(Buffer.from(source, 'utf8'))
+    const textContent = stripTags(Buffer.from(source, 'utf8').toString('utf8'))
     // Strip line breaks, and extra whitespace
-    return doc.textContent
+    return textContent
       .trim()
       .replace(/\r?\n|\r/g, '')
       .replace(/ +(?= )/g, '')
@@ -190,39 +193,32 @@ class Budou {
   }
 
   /**
-   * Returns concatenated HTML code with SPAN tag
+   * Returns concatenated HTML code with <span> tag
    * @param {ChunkList} chunks The list of chunks to be processed
    * @param {Object} attributes Key/Value pairs of the span attributes
    * @param {Number} maxLength Maximum length of span enclosed chunk
    * @return {String} The organized HTML code
    */
   _htmlSerialize (chunks, attributes, maxLength) {
-    const dom = new JSDOM('<span>')
-    const { document } = dom.window
-    const root = document.querySelector('span')
+    const htmlNodes = []
 
     chunks.forEach(chunk => {
-      if (chunk.isSpace() && root.textContent.length) {
+      if (chunk.isSpace() && htmlNodes.length) {
         // We want to preserve space in cases like "Hello 你好"
         // But the space in " 你好" can be discarded.
-        root.innerHTML += ' '
+        htmlNodes.push(' ')
       } else if (chunk.hasCjk() && !(maxLength && chunk.word.length > maxLength)) {
-        const ele = document.createElement('span')
-        ele.textContent += chunk.word
-        for (let key of Object.keys(attributes)) {
-          ele.setAttribute(key, attributes[key])
-        }
-        root.appendChild(ele)
+        const ele = createElementString('span', escapeHtml(chunk.word), attributes)
+        htmlNodes.push(ele)
       } else {
         // Otherwise add word without span tag for non-CJK text (e.g. English)
         // and CJK text that exceeds max length
-        // Use createTextNode to escape any special chars
-        root.appendChild(document.createTextNode(chunk.word))
+        htmlNodes.push(escapeHtml(chunk.word))
       }
     })
 
     // @note Do we sanitize this HTML? What attributes should we allow/disallow?
-    return root.outerHTML
+    return createElementString('span', htmlNodes.join(''))
   }
 
   /**
