@@ -1,5 +1,6 @@
 const unicodePs = require('unicode/category/Ps')
 const unicodePi = require('unicode/category/Pi')
+const escapeHtml = require('escape-html')
 
 /**
  * Checks if the char belongs to Ps or Pi unicode categories
@@ -35,7 +36,24 @@ const hasCjk = chars =>
     return CJK_RANGES.some(range => range[0] <= code && range[1] >= code)
   })
 
+/**
+ * Creates an html string of element with specified attributes and innerHtml
+ *
+ * @param {String} tag The tag name of element
+ * @param {String} [innerHtml=''] The html content of element
+ * @param {Object} [attributes={}] key/value pairs of the html attributes
+ * @return {String} The processed html element string
+ */
+const createElementString = (tag, innerHtml = '', attributes = {}) => {
+  const attributesStr = Object.keys(attributes)
+    .map(key => ` ${key}="${attributes[key]}"`)
+    .join('')
+
+  return `<${tag}${attributesStr}>${innerHtml}</${tag}>`
+}
+
 module.exports = {
-  isOpenPunctuationChar,
-  hasCjk
+  createElementString,
+  hasCjk,
+  isOpenPunctuationChar
 }
