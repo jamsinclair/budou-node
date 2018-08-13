@@ -1,4 +1,4 @@
-const { hasCjk, isOpenPunctuationChar } = require('../src/utils')
+const { createElementString, hasCjk, isOpenPunctuationChar } = require('../src/utils')
 
 // @todo Use generator function to build random strings for ranges?
 const CHINESE_DUMMY_TEXT = '能記安全償与属護月孫支人受。'
@@ -36,5 +36,24 @@ describe('isOpenPunctuationChar', () => {
     testCharacters.forEach((char, index) => {
       expect(isOpenPunctuationChar(char)).toEqual(expectedResults[index])
     })
+  })
+})
+
+describe('createElementString', () => {
+  test('should correctly create html string for given tag', () => {
+    const expected = '<foo></foo>'
+    expect(createElementString('foo')).toEqual(expected)
+    const expectedWithContent = '<foo>bar</foo>'
+    expect(createElementString('foo', 'bar')).toEqual(expectedWithContent)
+  })
+
+  test('should correctly output the given html attributes', () => {
+    const expected = '<foo class="bar" custom="value">bar</foo>'
+    expect(createElementString('foo', 'bar', { class: 'bar', custom: 'value' })).toEqual(expected)
+  })
+
+  test('should not escape html content', () => {
+    const expected = '<foo><div><script>alert(1)</script></div></foo>'
+    expect(createElementString('foo', '<div><script>alert(1)</script></div>')).toEqual(expected)
   })
 })
