@@ -45,7 +45,7 @@ class LowCache extends BudouCache {
   }
 
   _getCacheFilepath () {
-    const cacheDir = path.resolve(pkgDir.sync(__dirname), this.filepath)
+    const cacheDir = path.resolve(pkgDir.sync(), this.filepath)
     const cacheFile = path.resolve(cacheDir, './cache.json')
     if (!fs.existsSync(cacheDir)) {
       fs.mkdirSync(cacheDir)
