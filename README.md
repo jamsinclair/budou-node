@@ -1,4 +1,5 @@
 # budou-node
+[![npm version](https://badge.fury.io/js/budou.svg)](https://badge.fury.io/js/budou)
 [![Build Status](https://travis-ci.org/jamsinclair/budou-node.svg?branch=master)](https://travis-ci.org/jamsinclair/budou-node)
 
 Node.js port of https://github.com/google/budou:
