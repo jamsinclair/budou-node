@@ -4,6 +4,7 @@
   "description": "Node.js port of tool for beautiful line breaking in CJK (Chinese, Japanese, and Korean)",
   "main": "./src/budou.js",
   "author": "Jamie Sinclair",
+  "repository": "github:jamsinclair/budou-node",
   "license": "MIT",
   "files": [
     "src"
